@@ -15,7 +15,7 @@
         <input type="text" id="address" placeholder="Enter an address">
         <button onclick="geocodeAddress()">Search</button>
     </div>
-        <script>
+            <script>
         let map;
 
         function initMap() {
@@ -25,7 +25,7 @@
                     elementType: "geometry",
                     stylers: [
                         {
-                            color: "#212121" // Set background color
+                            color: "#242f3e" // Dark background color
                         }
                     ]
                 },
@@ -33,7 +33,7 @@
                     elementType: "labels.text.fill",
                     stylers: [
                         {
-                            color: "#ffffff" // Set text color
+                            color: "#ffffff" // White text color
                         }
                     ]
                 },
@@ -41,7 +41,7 @@
                     elementType: "labels.text.stroke",
                     stylers: [
                         {
-                            color: "#000000" // Set text outline color
+                            color: "#000000" // Black text outline color
                         }
                     ]
                 },
@@ -50,10 +50,37 @@
                     elementType: "geometry",
                     stylers: [
                         {
-                            color: "#757575" // Set administrative boundaries color
+                            color: "#2c3e50" // Dark administrative boundaries color
                         }
                     ]
                 },
+                {
+                    featureType: "water",
+                    elementType: "geometry",
+                    stylers: [
+                        {
+                            color: "#17263c" // Dark water color
+                        }
+                    ]
+                },
+                {
+                    featureType: "poi",
+                    elementType: "geometry",
+                    stylers: [
+                        {
+                            color: "#3e3e3e" // Dark color for points of interest
+                        }
+                    ]
+                },
+                {
+                    featureType: "road",
+                    elementType: "geometry",
+                    stylers: [
+                        {
+                            color: "#38414e" // Dark road color
+                        }
+                    ]
+                }
                 // Add more style rules as needed
             ];
 

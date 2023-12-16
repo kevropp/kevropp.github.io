@@ -10,89 +10,48 @@
 <body>
     <!-- Your map container -->
     <div id="map"></div>
-    <div id="places-container">
-        <h2>Nearby Places</h2>
-        <ul id="places-list"></ul>
+    <div>
+        <label for="address">Enter an Address:</label>
+        <input type="text" id="address" placeholder="Enter an address">
+        <button onclick="geocodeAddress()">Search</button>
     </div>
     <script>
         let map;
-        let infoWindow;
-        let service;
-        let placesList = document.getElementById("places-list");
+        let marker;
 
         // Initialize the map
         function initMap() {
             map = new google.maps.Map(document.getElementById("map"), {
                 center: { lat: 39.113014, lng: -105.358887 }, // Set initial map center
-                zoom: 15, // Set initial zoom level
+                zoom: 10, // Set initial zoom level
             });
-
-            infoWindow = new google.maps.InfoWindow();
-
-            // Initialize the Places service
-            service = new google.maps.places.PlacesService(map);
-
-            // Search for nearby restaurants
-            searchNearby("restaurant");
         }
 
-        // Search for nearby places and display them on the map
-        function searchNearby(keyword) {
-            const request = {
-                location: map.getCenter(),
-                radius: 1000, // Search radius in meters (adjust as needed)
-                keyword: keyword,
-            };
+        // Function to geocode an address and center the map
+        function geocodeAddress() {
+            const geocoder = new google.maps.Geocoder();
+            const address = document.getElementById("address").value;
 
-            service.nearbySearch(request, (results, status) => {
-                if (status === google.maps.places.PlacesServiceStatus.OK) {
-                    clearPlacesList();
+            geocoder.geocode({ address: address }, (results, status) => {
+                if (status === "OK" && results[0]) {
+                    const location = results[0].geometry.location;
 
-                    for (const place of results) {
-                        createMarker(place);
-                        addPlaceToList(place);
+                    // Center the map on the geocoded location
+                    map.setCenter(location);
+
+                    // Create a marker at the geocoded location
+                    if (marker) {
+                        marker.setMap(null); // Remove the previous marker
                     }
+                    marker = new google.maps.Marker({
+                        map: map,
+                        position: location,
+                        title: "Geocoded Location",
+                    });
+                } else {
+                    alert("Geocoding was not successful for the following reason: " + status);
                 }
             });
-        }
-
-        // Create a marker for a place and add a click event listener
-        function createMarker(place) {
-            const marker = new google.maps.Marker({
-                map: map,
-                position: place.geometry.location,
-                title: place.name,
-            });
-
-            marker.addListener("click", () => {
-                showPlaceDetails(place, marker);
-            });
-        }
-
-        // Show details of a selected place in the info window
-        function showPlaceDetails(place, marker) {
-            const detailsRequest = {
-                placeId: place.place_id,
-            };
-
-            service.getDetails(detailsRequest, (details, status) => {
-                if (status === google.maps.places.PlacesServiceStatus.OK) {
-                    infoWindow.setContent(`<h3>${details.name}</h3><p>${details.formatted_address}</p>`);
-                    infoWindow.open(map, marker);
-                }
-            });
-        }
-
-        // Add a place to the list of nearby places
-        function addPlaceToList(place) {
-            const li = document.createElement("li");
-            li.textContent = place.name;
-            placesList.appendChild(li);
-        }
-
-        // Clear the list of nearby places
-        function clearPlacesList() {
-            placesList.innerHTML = "";
         }
     </script>
 </body>

@@ -15,42 +15,52 @@
         <input type="text" id="address" placeholder="Enter an address">
         <button onclick="geocodeAddress()">Search</button>
     </div>
-    <script>
+        <script>
         let map;
-        let marker;
 
-        // Initialize the map
         function initMap() {
+            // Define custom map styles
+            const mapStyles = [
+                {
+                    elementType: "geometry",
+                    stylers: [
+                        {
+                            color: "#212121" // Set background color
+                        }
+                    ]
+                },
+                {
+                    elementType: "labels.text.fill",
+                    stylers: [
+                        {
+                            color: "#ffffff" // Set text color
+                        }
+                    ]
+                },
+                {
+                    elementType: "labels.text.stroke",
+                    stylers: [
+                        {
+                            color: "#000000" // Set text outline color
+                        }
+                    ]
+                },
+                {
+                    featureType: "administrative",
+                    elementType: "geometry",
+                    stylers: [
+                        {
+                            color: "#757575" // Set administrative boundaries color
+                        }
+                    ]
+                },
+                // Add more style rules as needed
+            ];
+
             map = new google.maps.Map(document.getElementById("map"), {
                 center: { lat: 39.113014, lng: -105.358887 }, // Set initial map center
                 zoom: 10, // Set initial zoom level
-            });
-        }
-
-        // Function to geocode an address and center the map
-        function geocodeAddress() {
-            const geocoder = new google.maps.Geocoder();
-            const address = document.getElementById("address").value;
-
-            geocoder.geocode({ address: address }, (results, status) => {
-                if (status === "OK" && results[0]) {
-                    const location = results[0].geometry.location;
-
-                    // Center the map on the geocoded location
-                    map.setCenter(location);
-
-                    // Create a marker at the geocoded location
-                    if (marker) {
-                        marker.setMap(null); // Remove the previous marker
-                    }
-                    marker = new google.maps.Marker({
-                        map: map,
-                        position: location,
-                        title: "Geocoded Location",
-                    });
-                } else {
-                    alert("Geocoding was not successful for the following reason: " + status);
-                }
+                styles: mapStyles // Apply custom map styles
             });
         }
     </script>

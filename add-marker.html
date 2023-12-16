@@ -14,20 +14,20 @@
         // Initialize the map
         function initMap() {
             const map = new google.maps.Map(document.getElementById("map"), {
-                center: { lat: 39.113014, lng: -105.358887 }, // Set initial map center
-                zoom: 10, // Set initial zoom level
+                center: { lat: 40.240332372, lng: -105.809663428 }, // Set initial map center
+                zoom: 4, // Set initial zoom level
             });
 
             // Add a marker to the map
             const marker = new google.maps.Marker({
-                position: { lat: 39.113014, lng: -105.358887 }, // Marker's position
+                position: { lat: 40.240332372, lng: -105.809663428 }, // Marker's position
                 map: map, // Map to attach the marker to
-                title: "Custom Marker", // Marker title (tooltip)
+                title: "Grand Lake, CO", // Marker title (tooltip)
             });
 
             // Add an info window to the marker
             const infoWindow = new google.maps.InfoWindow({
-                content: "This is a custom marker!",
+                content: "Grand Lake, CO",
             });
 
             // Show the info window when the marker is clicked

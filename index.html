@@ -10,50 +10,89 @@
 <body>
     <!-- Your map container -->
     <div id="map"></div>
+    <div id="places-container">
+        <h2>Nearby Places</h2>
+        <ul id="places-list"></ul>
+    </div>
     <script>
         let map;
-        let marker;
         let infoWindow;
+        let service;
+        let placesList = document.getElementById("places-list");
 
         // Initialize the map
         function initMap() {
             map = new google.maps.Map(document.getElementById("map"), {
                 center: { lat: 39.113014, lng: -105.358887 }, // Set initial map center
-                zoom: 10, // Set initial zoom level
+                zoom: 15, // Set initial zoom level
             });
 
-            // Initialize the info window
-            infoWindow = new google.maps.InfoWindow({
-                content: "<div id='infoWindowContent'>This is a custom info window!</div>",
-            });
+            infoWindow = new google.maps.InfoWindow();
 
-            // Add a click event listener to the map
-            google.maps.event.addListener(map, "click", function (event) {
-                // Get the clicked location's coordinates
-                const clickedLatLng = event.latLng;
+            // Initialize the Places service
+            service = new google.maps.places.PlacesService(map);
 
-                // Create a new marker at the clicked location
-                if (marker) {
-                    marker.setMap(null); // Remove the previous marker
+            // Search for nearby restaurants
+            searchNearby("restaurant");
+        }
+
+        // Search for nearby places and display them on the map
+        function searchNearby(keyword) {
+            const request = {
+                location: map.getCenter(),
+                radius: 1000, // Search radius in meters (adjust as needed)
+                keyword: keyword,
+            };
+
+            service.nearbySearch(request, (results, status) => {
+                if (status === google.maps.places.PlacesServiceStatus.OK) {
+                    clearPlacesList();
+
+                    for (const place of results) {
+                        createMarker(place);
+                        addPlaceToList(place);
+                    }
                 }
-                marker = new google.maps.Marker({
-                    position: clickedLatLng,
-                    map: map,
-                    title: "Custom Marker",
-                });
-
-                // Set the content and open the custom-styled info window
-                infoWindow.setContent("<div id='infoWindowContent'>Custom content here!</div>");
-                infoWindow.setPosition(clickedLatLng);
-                infoWindow.open(map);
-
-                // Apply custom CSS to the info window content
-                document.getElementById("infoWindowContent").style.color = "blue";
-                document.getElementById("infoWindowContent").style.fontSize = "16px";
-                document.getElementById("infoWindowContent").style.backgroundColor = "#fff";
-                document.getElementById("infoWindowContent").style.padding = "10px";
-                document.getElementById("infoWindowContent").style.border = "1px solid #ccc";
             });
+        }
+
+        // Create a marker for a place and add a click event listener
+        function createMarker(place) {
+            const marker = new google.maps.Marker({
+                map: map,
+                position: place.geometry.location,
+                title: place.name,
+            });
+
+            marker.addListener("click", () => {
+                showPlaceDetails(place, marker);
+            });
+        }
+
+        // Show details of a selected place in the info window
+        function showPlaceDetails(place, marker) {
+            const detailsRequest = {
+                placeId: place.place_id,
+            };
+
+            service.getDetails(detailsRequest, (details, status) => {
+                if (status === google.maps.places.PlacesServiceStatus.OK) {
+                    infoWindow.setContent(`<h3>${details.name}</h3><p>${details.formatted_address}</p>`);
+                    infoWindow.open(map, marker);
+                }
+            });
+        }
+
+        // Add a place to the list of nearby places
+        function addPlaceToList(place) {
+            const li = document.createElement("li");
+            li.textContent = place.name;
+            placesList.appendChild(li);
+        }
+
+        // Clear the list of nearby places
+        function clearPlacesList() {
+            placesList.innerHTML = "";
         }
     </script>
 </body>

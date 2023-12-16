@@ -23,7 +23,9 @@
             });
 
             // Initialize the info window
-            infoWindow = new google.maps.InfoWindow();
+            infoWindow = new google.maps.InfoWindow({
+                content: "<div id='infoWindowContent'>This is a custom info window!</div>",
+            });
 
             // Add a click event listener to the map
             google.maps.event.addListener(map, "click", function (event) {
@@ -40,14 +42,17 @@
                     title: "Custom Marker",
                 });
 
-                // Create content for the info window
-                const contentString =
-                    "Latitude: " + clickedLatLng.lat() + "<br>Longitude: " + clickedLatLng.lng();
-
-                // Set the content and open the info window
-                infoWindow.setContent(contentString);
+                // Set the content and open the custom-styled info window
+                infoWindow.setContent("<div id='infoWindowContent'>Custom content here!</div>");
                 infoWindow.setPosition(clickedLatLng);
                 infoWindow.open(map);
+
+                // Apply custom CSS to the info window content
+                document.getElementById("infoWindowContent").style.color = "blue";
+                document.getElementById("infoWindowContent").style.fontSize = "16px";
+                document.getElementById("infoWindowContent").style.backgroundColor = "#fff";
+                document.getElementById("infoWindowContent").style.padding = "10px";
+                document.getElementById("infoWindowContent").style.border = "1px solid #ccc";
             });
         }
     </script>

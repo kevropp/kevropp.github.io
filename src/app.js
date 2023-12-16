@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { Loader } from '@googlemaps/js-api-loader';
 import MarkerClusterer from '@google/markerclustererplus';
 
 const apiOptions = {

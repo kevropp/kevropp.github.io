@@ -11,28 +11,43 @@
     <!-- Your map container -->
     <div id="map"></div>
     <script>
+        let map;
+        let marker;
+        let infoWindow;
+
         // Initialize the map
         function initMap() {
-            const map = new google.maps.Map(document.getElementById("map"), {
+            map = new google.maps.Map(document.getElementById("map"), {
                 center: { lat: 39.113014, lng: -105.358887 }, // Set initial map center
-                zoom: 5, // Set initial zoom level
+                zoom: 10, // Set initial zoom level
             });
 
-            // Add a marker to the map
-            const marker = new google.maps.Marker({
-                position: { lat: 39.113014, lng: -105.358887 }, // Marker's position
-                map: map, // Map to attach the marker to
-                title: "Custom Marker", // Marker title (tooltip)
-            });
+            // Initialize the info window
+            infoWindow = new google.maps.InfoWindow();
 
-            // Add an info window to the marker
-            const infoWindow = new google.maps.InfoWindow({
-                content: "This is a custom marker!",
-            });
+            // Add a click event listener to the map
+            google.maps.event.addListener(map, "click", function (event) {
+                // Get the clicked location's coordinates
+                const clickedLatLng = event.latLng;
 
-            // Show the info window when the marker is clicked
-            marker.addListener("click", () => {
-                infoWindow.open(map, marker);
+                // Create a new marker at the clicked location
+                if (marker) {
+                    marker.setMap(null); // Remove the previous marker
+                }
+                marker = new google.maps.Marker({
+                    position: clickedLatLng,
+                    map: map,
+                    title: "Custom Marker",
+                });
+
+                // Create content for the info window
+                const contentString =
+                    "Latitude: " + clickedLatLng.lat() + "<br>Longitude: " + clickedLatLng.lng();
+
+                // Set the content and open the info window
+                infoWindow.setContent(contentString);
+                infoWindow.setPosition(clickedLatLng);
+                infoWindow.open(map);
             });
         }
     </script>
